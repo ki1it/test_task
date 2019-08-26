@@ -1,16 +1,16 @@
 var express = require('express');
 var router = express.Router();
-var app = require('../app');
+var passport = require('../auth');
 
 /* GET home page. */
-router.get('/', require('connect-ensure-login').ensureLoggedIn(), function(req, res, next) {
-  res.render('index', { username:  app.user.username});
+router.get('/', require('connect-ensure-login').ensureLoggedIn(), function (req, res, next) {
+    res.render('index', {username: passport.getUsername()});
 });
 
-router.post('/', function(req, res, next) {
-  app.user.username=req.body.username;
-  req.logout();
-  res.redirect('/login');
+router.post('/', function (req, res, next) {
+    passport.setUsername(req.body.username)
+    req.logout();
+    res.redirect('/login');
 });
 
 module.exports = router;
