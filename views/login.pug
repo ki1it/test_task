@@ -1,0 +1,10 @@
+form(action="/login" method="post")
+    .error #{message}
+    br
+    label Username:
+    input(type="text" name="username")
+    br
+    label Password:
+    input(type="password" name="password")
+    br
+    input(type="submit" value="Submit")
