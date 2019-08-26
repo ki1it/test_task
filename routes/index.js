@@ -10,7 +10,6 @@ router.get('/', require('connect-ensure-login').ensureLoggedIn(), function(req, 
 router.post('/', function(req, res, next) {
   app.user.username=req.body.username;
   req.logout();
-
   res.redirect('/login');
 });
 

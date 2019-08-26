@@ -37,29 +37,6 @@ var getUser = function(username, cb) {
 };
 
 
-// passport.use('local-login', new Strategy(
-//     function(username, password, done) {
-//         // User.findOne({ username: username }, function (err, user) {
-//         //     if (err) { return done(err); }
-//             console.log('checking')
-//             if (username!==user.username) { return done(null, false); }
-//             if (user.password!==password) { return done(null, false); }
-//             console.log('logged')
-//             return done(null, user);
-//
-//     }
-// ));
-// app.use(session({ secret: 'super secret' })); //to make passport remember the user on other pages too.(Read about session store. I used express-sessions.)
-
-// passport.serializeUser(function(user, done) { //In serialize user you decide what to store in the session. Here I'm storing the user id only.
-//     done(null, user.username);
-// });
-//
-// passport.deserializeUser(function(username, done) { //Here you retrieve all the info of the user from the session storage using the user id stored in the session earlier using serialize user.
-//     // db.findById(id, function(err, user) {
-//         done(null, user);
-//     // });
-// });
 passport.serializeUser(function(user, cb) {
     cb(null, user.username);
 });
@@ -104,18 +81,7 @@ app.post('/login', passport.authenticate('local-login', {successRedirect:'/',
     failureFlash : true}), function(req, res, next) {
     res.redirect('/');
 });
-//
-// app.post('/',
-//     function(req, res){
-//       req.logout();
-//       res.redirect('/');
-//     });
 
-// app.get('/profile',
-//     require('connect-ensure-login').ensureLoggedIn(),
-//     function(req, res){
-//       res.render('profile', { user: req.user });
-//     });
 var indexRouter = require('./routes/index');
 // var loginRouter = require('./routes/login');
 // app.use('/login', loginRouter);
