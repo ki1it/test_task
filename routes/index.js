@@ -3,7 +3,7 @@ var router = express.Router();
 var app = require('../app');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', require('connect-ensure-login').ensureLoggedIn(), function(req, res, next) {
   res.render('index', { username:  app.user.username});
 });
 

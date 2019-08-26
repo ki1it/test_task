@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-var USER = {
+var user = {
     username: 'user',
     validPassword: function(passwd) {
         return passwd === 'password';
@@ -31,13 +31,11 @@ var USER = {
 };
 
 var getUser = function(username, cb) {
-    if (username !== 'user')
+    if (username !== user.username)
         return cb(null, null);
-    cb(null, USER);
+    cb(null, user);
 };
 
-var user = {username:"user",
-    password:"password"};
 
 // passport.use('local-login', new Strategy(
 //     function(username, password, done) {
@@ -67,7 +65,7 @@ passport.serializeUser(function(user, cb) {
 });
 
 passport.deserializeUser(function(username, cb) {
-    cb(null, USER);
+    cb(null, user);
 });
 
 passport.use('local-login', new Strategy({
@@ -79,9 +77,9 @@ passport.use('local-login', new Strategy({
             if (err)
                 return done(err);
             if (!user)
-                return done(null, false, {message: 'Pas d\'utilisateur avec ce login.'});
+                return done(null, false, {message: 'Wrong login.'});
             if (!user.validPassword(password))
-                return done(null, false, {message: 'Oops! Mauvais password.'});
+                return done(null, false, {message: 'Wrong password.'});
             return done(null, user);
         });
     }));
@@ -95,17 +93,17 @@ app.use(session({
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-//
-// app.get('/login',
-//     function(req, res){
-//       res.render('login');
-//     });
-//
-// app.post('/login',
-//     passport.authenticate('local', {successRedirect:'/', failureRedirect: '/login' }),
-//     function(req, res) {
-//       res.redirect('/');
-//     });
+
+app.get('/login',
+    function(req, res){
+        res.render('login', {message: req.flash('error')});
+    });
+
+app.post('/login', passport.authenticate('local-login', {successRedirect:'/',
+    failureRedirect: '/login',
+    failureFlash : true}), function(req, res, next) {
+    res.redirect('/');
+});
 //
 // app.post('/',
 //     function(req, res){
@@ -119,8 +117,8 @@ app.use(passport.session());
 //       res.render('profile', { user: req.user });
 //     });
 var indexRouter = require('./routes/index');
-var loginRouter = require('./routes/login');
-app.use('/login', loginRouter);
+// var loginRouter = require('./routes/login');
+// app.use('/login', loginRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
